@@ -1,8 +1,10 @@
-import { NextFunction, Request, Response } from "express"
+import { json, NextFunction, Request, Response } from "express"
 import {  signupSchema } from "../zod"
 import { User } from "../db"
 import { signupInputs } from "../types"
-
+import jwt from 'jsonwebtoken';
+import dotenv from "dotenv"
+dotenv.config()
 
 export const signupMiddleWare = async(req:Request,res:Response,next:NextFunction) => {
     const data:signupInputs = req.body
@@ -27,5 +29,29 @@ export const signupMiddleWare = async(req:Request,res:Response,next:NextFunction
         res.status(500).json({
             errorMessage: "Something went wrong"
         })
+    }
+}
+
+export const authMiddleware = async(req:Request,res:Response,next:NextFunction) => {
+    const authHeader = req.headers.authorization
+    try {
+        if(!authHeader || !authHeader.startsWith('Bearer ')){
+            return res.status(411).json({
+                message: "Incorrect token"
+            });
+        }
+
+        const words = authHeader.split(" ")
+        const token = words[1]
+        const verified = jwt.verify(token, process.env.JWT_SECRET!)
+        if(!verified){
+            return res.status(411).json({
+                message: "Invalid token"
+            });
+        }
+        res.set("token",token)
+        next()
+    } catch (error) {
+        
     }
 }

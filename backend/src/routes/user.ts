@@ -1,7 +1,7 @@
 import { Router } from "express";
 import jwt from "jsonwebtoken"
 import { User } from "../db";
-import {  signupMiddleWare } from "../middlewares";
+import {  authMiddleware, signupMiddleWare } from "../middlewares";
 import bcrypt from 'bcrypt';
 import { signinSchema } from "../zod";
 import { signinInputs } from "../types";
@@ -64,6 +64,28 @@ userRouter.post("/signin",async(req,res)=> {
             errorMessage: "Not able to sign you in"
         })
     }
+})
+
+userRouter.get("/me", authMiddleware, async(req,res)=> {
+    try {
+        const token = req.get("token")
+        const decoded = jwt.decode(token!)
+        if(decoded!==null){
+            const user = await User.findOne({
+            // @ts-ignore
+            _id: decoded.id
+        })
+        res.status(200).json({
+            message: "Your token is valid",
+            firstName: user?.firstName
+        }) 
+    }
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({message: "something went wrong"})
+    }
+    
+
 })
 
 export default userRouter
