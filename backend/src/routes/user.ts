@@ -1,7 +1,7 @@
 import { Router } from "express";
 import jwt from "jsonwebtoken"
 import { User } from "../db";
-import {  authMiddleware, signupMiddleWare } from "../middlewares";
+import {  authMiddleware, CustomRequest, signupMiddleWare } from "../middlewares";
 import bcrypt from 'bcrypt';
 import { signinSchema } from "../zod";
 import { signinInputs } from "../types";
@@ -50,7 +50,7 @@ userRouter.post("/signin",async(req,res)=> {
             })
         }
 
-        const verifyPass = await bcrypt.compare(user.password, data.password)
+        const verifyPass = await bcrypt.compare(data.password, user.password)
         if(!verifyPass){
             return res.status(411).json({message: "Wrong password"})
         }
@@ -66,20 +66,24 @@ userRouter.post("/signin",async(req,res)=> {
     }
 })
 
-userRouter.get("/me", authMiddleware, async(req,res)=> {
+userRouter.get("/me", authMiddleware, async(req:CustomRequest,res)=> {
     try {
-        const token = req.get("token")
+        const token = req.token
+        console.log("token: ",token)
         const decoded = jwt.decode(token!)
         if(decoded!==null){
             const user = await User.findOne({
             // @ts-ignore
             _id: decoded.id
         })
-        res.status(200).json({
+        return res.status(200).json({
             message: "Your token is valid",
             firstName: user?.firstName
         }) 
     }
+    return res.status(400).json({
+        message: "Enter a valid token"
+    })
     } catch (error) {
         console.log(error)
         return res.status(500).json({message: "something went wrong"})

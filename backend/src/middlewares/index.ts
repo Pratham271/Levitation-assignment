@@ -5,6 +5,9 @@ import { signupInputs } from "../types"
 import jwt from 'jsonwebtoken';
 import dotenv from "dotenv"
 dotenv.config()
+export interface CustomRequest extends Request {
+    token?: string;
+  }
 
 export const signupMiddleWare = async(req:Request,res:Response,next:NextFunction) => {
     const data:signupInputs = req.body
@@ -32,7 +35,7 @@ export const signupMiddleWare = async(req:Request,res:Response,next:NextFunction
     }
 }
 
-export const authMiddleware = async(req:Request,res:Response,next:NextFunction) => {
+export const authMiddleware = async(req:CustomRequest,res:Response,next:NextFunction) => {
     const authHeader = req.headers.authorization
     try {
         if(!authHeader || !authHeader.startsWith('Bearer ')){
@@ -49,9 +52,12 @@ export const authMiddleware = async(req:Request,res:Response,next:NextFunction) 
                 message: "Invalid token"
             });
         }
-        res.set("token",token)
-        next()
+        req.token = token
+        next();
     } catch (error) {
-        
+        console.log(error)
+        return res.status(500).json({
+            message: "Something went wrong"
+        })
     }
 }
