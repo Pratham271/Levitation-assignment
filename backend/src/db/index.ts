@@ -63,7 +63,6 @@ const cartSchema = new mongoose.Schema({
 
 },{ timestamps: true })
 
-const User = mongoose.model("user", userSchema)
-const Cart = mongoose.model("cart", cartSchema)
+export const User = mongoose.model("user", userSchema)
+export const Cart = mongoose.model("cart", cartSchema)
 
-module.exports = {User, Cart}
