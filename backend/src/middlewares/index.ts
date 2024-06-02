@@ -1,16 +1,8 @@
-import jwt from "jsonwebtoken"
-import bcrypt from "bcrypt"
 import { NextFunction, Request, Response } from "express"
-import { signupSchema } from "../zod"
+import {  signupSchema } from "../zod"
 import { User } from "../db"
+import { signupInputs } from "../types"
 
-
-interface signupInputs {
-    firstName: string
-    lastName: string
-    email:string
-    password: string
-}
 
 export const signupMiddleWare = async(req:Request,res:Response,next:NextFunction) => {
     const data:signupInputs = req.body
