@@ -3,6 +3,7 @@ import Appbar from "../components/Appbar"
 import axios from 'axios';
 import BASE_URL from "../config";
 import ProductsCard from "../components/ProductsCard";
+import { useNavigate } from "react-router";
 
 
 type Product = {
@@ -15,12 +16,32 @@ type Product = {
 
 const Products = () => {
   const [products, setProducts] = useState([])
+  const navigate = useNavigate()
   useEffect(()=> {
     async function fetchProducts(){
       const response = await axios.get(`${BASE_URL}/product/allProducts`)
       setProducts(response.data.products)
     }
-    fetchProducts()
+    axios.get(`${BASE_URL}/user/me`, {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    })
+    .then((response)=> {
+      console.log(response)
+      if(response.status===200){
+        fetchProducts()
+      }
+      else{
+        navigate("/")
+      }
+      
+    })
+    .catch((e)=> {
+      console.log(e)
+      navigate("/")
+    })
+    
   },[])
   return (
     <div>
