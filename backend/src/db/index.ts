@@ -71,12 +71,8 @@ const cartSchema = new mongoose.Schema({
         required: true
     },
     validity: {
-        type: Date,
-        default: function() {
-            const currentDate = new Date();
-            const nextYearDate = new Date(currentDate.setFullYear(currentDate.getFullYear() + 1));
-            return nextYearDate;
-        }
+        type: String,
+        required: true
     },
     
 
