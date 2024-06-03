@@ -48,7 +48,9 @@ productsRouter.get("/allProducts", async(req,res)=> {
 productsRouter.post("/generatePDF", async(req,res)=> {
     try {
         const {url}= req.body
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({
+            ignoreDefaultArgs: ['--disable-extensions'],
+        });
         const page = await browser.newPage()
         await page.goto(url, {
             waitUntil: 'networkidle0'
