@@ -19,7 +19,7 @@ const Appbar = () => {
             localStorage.removeItem("token")
             navigate("/")
         }}>Logout</button>
-        <button className='relative'><Cart/><p className='fixed top-3 right-2.5 text-xs bg-gray-900 text-white rounded-full px-[4px]'>{cartLength}</p></button>
+        <button className='relative'><Cart/><p className='absolute top-3 right-2.5 text-xs bg-gray-900 text-white rounded-full px-[4px]'>{cartLength}</p></button>
       </div>
     </div>
   )
