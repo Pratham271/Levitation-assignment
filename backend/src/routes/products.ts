@@ -9,6 +9,8 @@ interface Product {
     title: string
     description: string
     price: number
+    image: string
+
 }
 productsRouter.get("/addProducts", async(req,res) => {
     const products = await Product.find({})
@@ -19,7 +21,8 @@ productsRouter.get("/addProducts", async(req,res) => {
             await Product.create({
                 productName: prod.title,
                 price: prod.price,
-                description: prod.description
+                description: prod.description,
+                image: prod.image
             })
         })
 
