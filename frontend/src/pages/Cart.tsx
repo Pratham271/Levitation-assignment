@@ -30,6 +30,14 @@ const Cart = () => {
             navigate("/")
           })
     },[])
+    const formatDate = (date: Date): string => {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+    const today = new Date();
+    const formattedDate = formatDate(today);
   return (
     <div>
         <div className="flex justify-between m-12 items-center">
@@ -58,7 +66,7 @@ const Cart = () => {
         </div>
         <div className="flex justify-between ml-6 mt-40 text-gray-600 text-md font-light items-center">
            <div>
-            <span className="text-gray-400">valid until: &nbsp;</span> 12/04/23
+            <span className="text-gray-400">valid until: &nbsp;</span> {formattedDate}
            </div>
            <div className="mr-6 flex items-center">
             <button className="text-sm bg-gray-900 text-gray-100 rounded-md px-3 py-1 hover:bg-gray-800">Generate PDF</button>
