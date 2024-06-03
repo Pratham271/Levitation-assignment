@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { Product } from "../db";
 import axios from "axios";
+import puppeteer from "puppeteer";
 
 export const productsRouter = Router()
 
@@ -42,4 +43,28 @@ productsRouter.get("/allProducts", async(req,res)=> {
     return res.status(200).json({
         products
     })
+})
+
+productsRouter.post("/generatePDF", async(req,res)=> {
+    try {
+        const {url}= req.body
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage()
+        await page.goto(url, {
+            waitUntil: 'networkidle0'
+          });
+      
+        const result = await page.pdf({
+          format: 'a4',
+        });
+        await browser.close();
+
+        return res.status(200).json({
+            result
+        });
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({erroMessage: "Error generating pdf"})
+    }
 })

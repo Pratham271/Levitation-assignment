@@ -1,35 +1,18 @@
 import axios from "axios"
-import { useEffect } from "react"
+
 import BASE_URL from "../config"
 import { useNavigate } from "react-router"
 import DataTable from "../components/DataTable"
 import TotalTable from "../components/TotalTable"
+import { useDispatch } from 'react-redux';
+import { setPdfUrl } from "../reduxStore/pdfSlice"
 
-
+import { Buffer } from 'buffer'
 
 const Cart = () => {
     const navigate = useNavigate()
-    useEffect(()=> {
-        axios.get(`${BASE_URL}/user/me`, {
-            headers: {
-              authorization: `Bearer ${localStorage.getItem("token")}`
-            }
-          })
-          .then((response)=> {
-            
-            if(response.status===200){
-              
-            }
-            else{
-              navigate("/")
-            }
-            
-          })
-          .catch((e)=> {
-            console.log(e)
-            navigate("/")
-          })
-    },[])
+    const dispatch = useDispatch();
+    
     const formatDate = (date: Date): string => {
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -38,6 +21,19 @@ const Cart = () => {
     };
     const today = new Date();
     const formattedDate = formatDate(today);
+
+    const generatePDF = async() => {
+        const res = await axios.post(`${BASE_URL}/product/generatePDF`, {
+            url: "http://localhost:5173/cart",
+            
+        })
+        if(res.status===200){
+            const base64Data = Buffer.from(res.data.result.data).toString('base64');
+            const pdfUrl = `data:application/pdf;base64,${base64Data}`;
+            dispatch(setPdfUrl(pdfUrl));
+            navigate("/pdf");
+        }
+    }
   return (
     <div>
         <div className="flex justify-between m-12 items-center">
@@ -69,7 +65,7 @@ const Cart = () => {
             <span className="text-gray-400">valid until: &nbsp;</span> {formattedDate}
            </div>
            <div className="mr-6 flex items-center">
-            <button className="text-sm bg-gray-900 text-gray-100 rounded-md px-3 py-1 hover:bg-gray-800">Generate PDF</button>
+            <button onClick={generatePDF} className="text-sm bg-gray-900 text-gray-100 rounded-md px-3 py-1 hover:bg-gray-800">Generate PDF</button>
            </div>
         </div>
     </div>
