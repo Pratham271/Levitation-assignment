@@ -24,7 +24,7 @@ const Cart = () => {
 
     const generatePDF = async() => {
         const res = await axios.post(`${BASE_URL}/product/generatePDF`, {
-            url: "http://localhost:5173/cart",
+            url: "https://levitation-assignment-six.vercel.app/cart",
             
         })
         if(res.status===200){
