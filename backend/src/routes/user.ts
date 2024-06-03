@@ -69,7 +69,6 @@ userRouter.post("/signin",async(req,res)=> {
 userRouter.get("/me", authMiddleware, async(req:CustomRequest,res)=> {
     try {
         const token = req.token
-        console.log("token: ",token)
         const decoded = jwt.decode(token!)
         if(decoded!==null){
             const user = await User.findOne({
