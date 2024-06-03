@@ -50,7 +50,7 @@ productsRouter.post("/generatePDF", async(req,res)=> {
         const {url}= req.body
         const browser = await puppeteer.launch({
             headless: true,
-            executablePath: `/usr/bin/google-chrome`,
+            executablePath: `/opt/render/.cache/puppeteer`,
             args: [`--no-sandbox`, `--headless`, `--disable-gpu`, `--disable-dev-shm-usage`],
         });
         const page = await browser.newPage()
