@@ -16,7 +16,7 @@ const Signup = () => {
           })
           .then((response)=> {
             if(response.status===200){
-              navigate("/allBlogs")
+              navigate("/products")
             }
             else{
               alert("Not Authorized")
