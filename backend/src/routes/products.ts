@@ -48,11 +48,7 @@ productsRouter.get("/allProducts", async(req,res)=> {
 productsRouter.post("/generatePDF", async(req,res)=> {
     try {
         const {url}= req.body
-        const browser = await puppeteer.launch({
-            headless: true,
-            executablePath: `/opt/render/.cache/puppeteer`,
-            args: [`--no-sandbox`, `--headless`, `--disable-gpu`, `--disable-dev-shm-usage`],
-        });
+        const browser = await puppeteer.launch();
         const page = await browser.newPage()
         await page.goto(url, {
             waitUntil: 'networkidle0'
