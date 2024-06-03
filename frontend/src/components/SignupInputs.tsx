@@ -29,7 +29,7 @@ const SignupInputs = () => {
             password: postInputs.password
         })
         if(res.status===201){
-            console.log(res.data)
+            
             navigate("/signin") 
         }
        

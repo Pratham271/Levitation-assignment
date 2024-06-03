@@ -22,7 +22,6 @@ const SigninInputs = () => {
             password: postInputs.password
         })
         if(res.status===200){
-            console.log(res.data)
             localStorage.setItem("token",res.data.token)
             navigate("/products")
         }
