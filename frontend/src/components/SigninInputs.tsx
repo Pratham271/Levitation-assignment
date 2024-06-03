@@ -24,7 +24,7 @@ const SigninInputs = () => {
         if(res.status===200){
             console.log(res.data)
             localStorage.setItem("token",res.data.token)
-            navigate("/allblogs")
+            navigate("/products")
         }
         } catch (error) {
             alert("Error while signing in")

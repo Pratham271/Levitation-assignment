@@ -15,7 +15,7 @@ productsRouter.get("/addProducts", async(req,res) => {
     if(products.length===0){
         const response = await axios.get("https://fakestoreapi.com/products")
         const products = response.data
-        products.map(async(prod:Product) => {
+        products.slice(0,8).map(async(prod:Product) => {
             await Product.create({
                 productName: prod.title,
                 price: prod.price,
@@ -31,4 +31,12 @@ productsRouter.get("/addProducts", async(req,res) => {
         message: "Products are already there"
     })
     
+})
+
+productsRouter.get("/allProducts", async(req,res)=> {
+    const products = await Product.find({})
+
+    return res.status(200).json({
+        products
+    })
 })
