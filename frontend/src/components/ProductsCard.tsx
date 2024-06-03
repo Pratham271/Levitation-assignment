@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { addToCart, incrementQuantity, decrementQuantity } from '../cartSlice';
-import { RootState } from '../store';
+import { addToCart, incrementQuantity, decrementQuantity } from '../reduxStore/cartSlice';
+import { RootState } from '../reduxStore/store';
 
 interface ProductProps {
   image: string;
