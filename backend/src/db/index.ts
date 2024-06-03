@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv"
 dotenv.config()
-mongoose.connect(process.env.MONGOOSE_CONNECTION_STRING!)
+mongoose.connect("mongodb+srv://admin:cTtpmFzMspA7ZhnM@cluster0.wiuyda9.mongodb.net/invoice")
 .then(()=> console.log("connected to mongoose"))
 .catch((e) => console.log(e))
 
