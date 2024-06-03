@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv"
 dotenv.config()
-mongoose.connect(process.env.MONGOOSE_CONNECTION_STRING!)
+mongoose.connect("")
 .then(()=> console.log("connected to mongoose"))
 .catch((e) => console.log(e))
 
