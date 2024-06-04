@@ -54,6 +54,7 @@ productsRouter.get("/allProducts", async(req,res)=> {
 
 productsRouter.post("/generatePDF", authMiddleware,async(req:CustomRequest,res)=> {
     try {
+
         const token = req.token
         const body = req.body
         const decoded = jwt.decode(token!)
@@ -82,6 +83,10 @@ productsRouter.post("/generatePDF", authMiddleware,async(req:CustomRequest,res)=
         const browser = await puppeteer.launch({
             ignoreDefaultArgs: ['--disable-extensions'],
         });
+
+        
+        const browser = await puppeteer.launch();
+
         const page = await browser.newPage()
         await page.goto(body.url, {
             waitUntil: 'networkidle0'
