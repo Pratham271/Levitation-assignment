@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { Product } from "../db";
+import { Cart, Product, User } from "../db";
 import axios from "axios";
 import puppeteer from "puppeteer";
-
+import { authMiddleware, CustomRequest } from "../middlewares";
+import jwt from "jsonwebtoken"
 export const productsRouter = Router()
 
 
@@ -12,6 +13,12 @@ interface Product {
     price: number
     image: string
 
+}
+
+interface Cart{
+    name: string,
+    price: number,
+    quantity: number
 }
 productsRouter.get("/addProducts", async(req,res) => {
     const products = await Product.find({})
@@ -45,12 +52,43 @@ productsRouter.get("/allProducts", async(req,res)=> {
     })
 })
 
-productsRouter.post("/generatePDF", async(req,res)=> {
+productsRouter.post("/generatePDF", authMiddleware,async(req:CustomRequest,res)=> {
     try {
-        const {url}= req.body
+
+        const token = req.token
+        const body = req.body
+        const decoded = jwt.decode(token!)
+        if(decoded === null){
+            return res.status(400).json({message: "User not authenticated"})
+        }
+        // @ts-ignore
+        const user = await User.findById(decoded.id)
+        if(!user){
+            return res.status(404).json({message: "User not found"})
+
+        }
+        const cartProducts = body.items.map((product:Cart) => ({
+            productName: product.name,
+            quantity: product.quantity,
+            price: product.price,
+        }));
+
+        await Cart.create({
+            userId: user.id,
+            validity: body.date,
+            products: cartProducts
+
+        })
+        
+        const browser = await puppeteer.launch({
+            ignoreDefaultArgs: ['--disable-extensions'],
+        });
+
+        
         const browser = await puppeteer.launch();
+
         const page = await browser.newPage()
-        await page.goto(url, {
+        await page.goto(body.url, {
             waitUntil: 'networkidle0'
           });
       

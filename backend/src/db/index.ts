@@ -51,13 +51,8 @@ const productSchema = new mongoose.Schema({
     }
 })
 
-const cartSchema = new mongoose.Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
-        required: true
-    },
-    productName : {
+const cartProductSchema = new mongoose.Schema({
+    productName: {
         type: String,
         required: true
     },
@@ -69,7 +64,16 @@ const cartSchema = new mongoose.Schema({
     price: {
         type: Number,
         required: true
+    }
+})
+
+const cartSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+        required: true
     },
+    products: [cartProductSchema],
     validity: {
         type: String,
         required: true

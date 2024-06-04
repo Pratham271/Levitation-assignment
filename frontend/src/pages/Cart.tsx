@@ -6,13 +6,15 @@ import DataTable from "../components/DataTable"
 import TotalTable from "../components/TotalTable"
 import { useDispatch } from 'react-redux';
 import { setPdfUrl } from "../reduxStore/pdfSlice"
-
+import { useSelector } from 'react-redux';
+import { RootState } from '../reduxStore/store';
 import { Buffer } from 'buffer'
 
 const Cart = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch();
-    
+    const cartItems = useSelector((state: RootState) => state.cart.items);
+    console.log(cartItems)
     const formatDate = (date: Date): string => {
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -23,10 +25,20 @@ const Cart = () => {
     const formattedDate = formatDate(today);
 
     const generatePDF = async() => {
-        const res = await axios.post(`${BASE_URL}/product/generatePDF`, {
-            url: "https://levitation-assignment-six.vercel.app/cart",
-            
-        })
+        console.log(localStorage.getItem("token"))
+        const res = await axios.post(`${BASE_URL}/product/generatePDF`, 
+            {
+                url: "https://levitation-assignment-six.vercel.app/cart",
+                date: formattedDate,
+                items: cartItems
+            },
+            {
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            }
+        );
+
         if(res.status===200){
             const base64Data = Buffer.from(res.data.result.data).toString('base64');
             const pdfUrl = `data:application/pdf;base64,${base64Data}`;

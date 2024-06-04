@@ -1,4 +1,4 @@
-import { json, NextFunction, Request, Response } from "express"
+import {  NextFunction, Request, Response } from "express"
 import {  signupSchema } from "../zod"
 import { User } from "../db"
 import { signupInputs } from "../types"
@@ -37,6 +37,7 @@ export const signupMiddleWare = async(req:Request,res:Response,next:NextFunction
 
 export const authMiddleware = async(req:CustomRequest,res:Response,next:NextFunction) => {
     const authHeader = req.headers.authorization
+    console.log(authHeader)
     try {
         if(!authHeader || !authHeader.startsWith('Bearer ')){
             return res.status(411).json({
