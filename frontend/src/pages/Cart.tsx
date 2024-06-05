@@ -9,11 +9,13 @@ import { setPdfUrl } from "../reduxStore/pdfSlice"
 import { useSelector } from 'react-redux';
 import { RootState } from '../reduxStore/store';
 import { Buffer } from 'buffer'
+import { useEffect, useState } from "react"
 
 const Cart = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch();
     const cartItems = useSelector((state: RootState) => state.cart.items);
+    const [items,setItems] = useState([])
     console.log(cartItems)
     const formatDate = (date: Date): string => {
         const day = String(date.getDate()).padStart(2, '0');
@@ -23,6 +25,19 @@ const Cart = () => {
     };
     const today = new Date();
     const formattedDate = formatDate(today);
+
+    useEffect(()=> {
+        async function getProducts(){
+            const res = await axios.get(`${BASE_URL}/product/cartProducts`, {
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            })
+
+            console.log(res.data.cartProds)
+        }
+        getProducts()
+    },[])
 
     const generatePDF = async() => {
         console.log(localStorage.getItem("token"))
