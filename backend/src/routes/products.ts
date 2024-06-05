@@ -54,7 +54,7 @@ productsRouter.get("/allProducts", async(req,res)=> {
     })
 })
 
-productsRouter.post("/tempCart", authMiddleware, async(req:CustomRequest, res) => {
+productsRouter.post("/addtoCart", authMiddleware, async(req:CustomRequest, res) => {
     try {
         const token = req.token
         const body = req.body
