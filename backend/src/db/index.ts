@@ -82,7 +82,22 @@ const cartSchema = new mongoose.Schema({
 
 },{ timestamps: true })
 
+
+const tempCartSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+        required: true
+    },
+    products: [cartProductSchema],
+    validity: {
+        type: String,
+        required: true
+    },
+})
+
 export const User = mongoose.model("user", userSchema)
 export const Cart = mongoose.model("cart", cartSchema)
 export const Product = mongoose.model("product", productSchema)
+export const TempCart = mongoose.model("tempCart", tempCartSchema)
 
