@@ -80,12 +80,9 @@ productsRouter.post("/generatePDF", authMiddleware,async(req:CustomRequest,res)=
 
         })
         
-        const browser = await puppeteer.launch({
-            ignoreDefaultArgs: ['--disable-extensions'],
-        });
-
         
         const browser = await puppeteer.launch();
+
 
         const page = await browser.newPage()
         await page.goto(body.url, {
