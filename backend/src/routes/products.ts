@@ -59,6 +59,10 @@ productsRouter.post("/addtoCart", authMiddleware, async(req:CustomRequest, res) 
         const token = req.token
         const body = req.body
         const decoded = jwt.decode(token!)
+        console.log(token)
+        console.log(body)
+        console.log(decoded)
+
 
         if(decoded === null){
             return res.status(400).json({message: "User not authenticated"})
@@ -78,9 +82,10 @@ productsRouter.post("/addtoCart", authMiddleware, async(req:CustomRequest, res) 
 
         await TempCart.create({
             userId: user._id,
-            date: body.date,
+            validity: body.date,
             products: tempCartProducts
         })
+        return res.status(200).json({message: "added successfully to cart"})
     } catch (error) {
         console.log(error)
         return res.status(500).json({erroMessage: "Error adding items to cart"})
