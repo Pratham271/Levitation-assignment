@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Cart, Product, User } from "../db";
+import { Cart, Product, TempCart, User } from "../db";
 import axios from "axios";
 import puppeteer from "puppeteer";
 import { authMiddleware, CustomRequest } from "../middlewares";
@@ -20,6 +20,8 @@ interface Cart{
     price: number,
     quantity: number
 }
+
+
 productsRouter.get("/addProducts", async(req,res) => {
     const products = await Product.find({})
     if(products.length===0){
@@ -52,6 +54,39 @@ productsRouter.get("/allProducts", async(req,res)=> {
     })
 })
 
+productsRouter.post("/tempCart", authMiddleware, async(req:CustomRequest, res) => {
+    try {
+        const token = req.token
+        const body = req.body
+        const decoded = jwt.decode(token!)
+        
+        if(decoded === null){
+            return res.status(400).json({message: "User not authenticated"})
+        }
+
+        // @ts-ignore
+        const user = await User.findById(decoded.id)
+        if(!user){
+            return res.status(404).json({message: "User not found"})
+        }
+
+        const tempCartProducts = body.items.map((product:Cart) => ({
+            productName: product.name,
+            quantity: product.quantity,
+            price: product.price
+        }));
+
+        await TempCart.create({
+            userId: user._id,
+            date: body.date,
+            products: tempCartProducts
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({erroMessage: "Error adding items to cart"})
+    }
+})
+
 productsRouter.post("/generatePDF", authMiddleware,async(req:CustomRequest,res)=> {
     try {
         const token = req.token
@@ -76,7 +111,6 @@ productsRouter.post("/generatePDF", authMiddleware,async(req:CustomRequest,res)=
             userId: user.id,
             validity: body.date,
             products: cartProducts
-
         })
         
         const browser = await puppeteer.launch({
@@ -84,11 +118,13 @@ productsRouter.post("/generatePDF", authMiddleware,async(req:CustomRequest,res)=
             devtools: true,
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
             timeout: 60000
-          });
+        });
+
         const page = await browser.newPage()
+
         await page.goto(body.url, {
             waitUntil: 'networkidle0'
-          });
+        });
       
         const result = await page.pdf({
           format: 'a4',
