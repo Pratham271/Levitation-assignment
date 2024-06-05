@@ -59,7 +59,7 @@ productsRouter.post("/tempCart", authMiddleware, async(req:CustomRequest, res) =
         const token = req.token
         const body = req.body
         const decoded = jwt.decode(token!)
-        
+
         if(decoded === null){
             return res.status(400).json({message: "User not authenticated"})
         }
@@ -102,6 +102,8 @@ productsRouter.post("/generatePDF", authMiddleware,async(req:CustomRequest,res)=
             return res.status(404).json({message: "User not found"})
 
         }
+
+        await TempCart.deleteMany({userId: user._id})
         const cartProducts = body.items.map((product:Cart) => ({
             productName: product.name,
             quantity: product.quantity,
