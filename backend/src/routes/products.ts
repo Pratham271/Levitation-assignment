@@ -80,8 +80,11 @@ productsRouter.post("/generatePDF", authMiddleware,async(req:CustomRequest,res)=
         })
         
         const browser = await puppeteer.launch({
-            ignoreDefaultArgs: ['--disable-extensions'],
-        });
+            headless: false,
+            devtools: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+            timeout: 60000
+          });
         const page = await browser.newPage()
         await page.goto(body.url, {
             waitUntil: 'networkidle0'
