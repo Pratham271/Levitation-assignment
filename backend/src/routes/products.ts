@@ -89,6 +89,7 @@ productsRouter.post("/tempCart", authMiddleware, async(req:CustomRequest, res) =
 
 productsRouter.post("/generatePDF", authMiddleware,async(req:CustomRequest,res)=> {
     try {
+
         const token = req.token
         const body = req.body
         const decoded = jwt.decode(token!)
@@ -113,12 +114,14 @@ productsRouter.post("/generatePDF", authMiddleware,async(req:CustomRequest,res)=
             products: cartProducts
         })
         
+
         const browser = await puppeteer.launch({
             headless: false,
             devtools: true,
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
             timeout: 60000
         });
+
 
         const page = await browser.newPage()
 
