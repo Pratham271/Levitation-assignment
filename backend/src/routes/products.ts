@@ -87,6 +87,32 @@ productsRouter.post("/tempCart", authMiddleware, async(req:CustomRequest, res) =
     }
 })
 
+productsRouter.get("/cartProducts", authMiddleware, async(req:CustomRequest,res)=> {
+    try {
+        const token = req.token
+        const decoded = jwt.decode(token!)
+
+        if(decoded === null){
+            return res.status(400).json({message: "User not authenticated"})
+        }
+
+        // @ts-ignore
+        const user = await User.findById(decoded.id)
+        if(!user){
+            return res.status(404).json({message: "User not found"})
+        }
+
+        const cartProds = await TempCart.find({userId: user._id})
+        if(!cartProds){
+            return res.status(404).json({message: "No products found"})
+        }
+        return res.status(200).json({cartProds})
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({message: "Error finding products"})
+    }
+})
+
 productsRouter.post("/generatePDF", authMiddleware,async(req:CustomRequest,res)=> {
     try {
         const token = req.token
